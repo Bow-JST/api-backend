@@ -1,0 +1,36 @@
+server:
+  port: 8090
+# 配置 gateway 网关
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=source, zwh # 为响应头中添加 source = zwh 信息
+      routes: # 以 /api/** 开头的请求，都会转发到 uri [路由转发]
+        - id: api_route
+          uri: http://api-interface.liebe-dich.love:8123
+          predicates:
+            - Path=/api/**
+# 输出详细的日志信息
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+# 配置 dubbo 微服务
+dubbo:
+  # 指定应用名字
+  application:
+    name: dubbo-springboot-demo-provider
+  protocol:
+    # 采用的协议名称
+    name: dubbo
+    # 代表端口号不确定
+    port: -1
+  registry:
+    # 注册中心 id
+    id: nacos-registry
+    # 注册中心的地址和端口
+    address: nacos://127.0.0.1:8848
+
